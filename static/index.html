@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEON Agent Terminal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0a0a0a 100%);
+            min-height: 100vh;
+            color: #00ff88;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            padding: 30px 0;
+            border-bottom: 2px solid #00ff88;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            text-shadow: 0 0 20px #00ff88, 0 0 40px #00ff88;
+            letter-spacing: 4px;
+        }
+
+        .header .subtitle {
+            color: #888;
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+
+        .status-bar {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 15px;
+            font-size: 0.85rem;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #00ff88;
+            box-shadow: 0 0 10px #00ff88;
+            animation: pulse 2s infinite;
+        }
+
+        .status-dot.offline {
+            background: #ff4444;
+            box-shadow: 0 0 10px #ff4444;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Main Layout */
+        .main-layout {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 20px;
+        }
+
+        @media (max-width: 900px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Terminal */
+        .terminal {
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid #00ff88;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 0 30px rgba(0, 255, 136, 0.2);
+        }
+
+        .terminal-header {
+            background: linear-gradient(90deg, #00ff88, #00cc6a);
+            color: #000;
+            padding: 10px 15px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .terminal-dots {
+            display: flex;
+            gap: 6px;
+        }
+
+        .terminal-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .terminal-dot.red { background: #ff5f56; }
+        .terminal-dot.yellow { background: #ffbd2e; }
+        .terminal-dot.green { background: #27ca40; }
+
+        .terminal-output {
+            height: 400px;
+            overflow-y: auto;
+            padding: 15px;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .terminal-output::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .terminal-output::-webkit-scrollbar-track {
+            background: #1a1a1a;
+        }
+
+        .terminal-output::-webkit-scrollbar-thumb {
+            background: #00ff88;
+            border-radius: 4px;
+        }
+
+        .message {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .message.user {
+            background: rgba(0, 255, 136, 0.1);
+            border-left: 3px solid #00ff88;
+        }
+
+        .message.agent {
+            background: rgba(0, 150, 255, 0.1);
+            border-left: 3px solid #0096ff;
+        }
+
+        .message.system {
+            background: rgba(255, 200, 0, 0.1);
+            border-left: 3px solid #ffc800;
+            color: #ffc800;
+        }
+
+        .message.error {
+            background: rgba(255, 68, 68, 0.1);
+            border-left: 3px solid #ff4444;
+            color: #ff4444;
+        }
+
+        .message-label {
+            font-size: 0.75rem;
+            color: #888;
+            margin-bottom: 5px;
+        }
+
+        .message-content {
+            word-break: break-word;
+        }
+
+        .message-content code {
+            background: rgba(0, 255, 136, 0.2);
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+
+        .response-type {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-size: 0.75rem;
+            margin-right: 10px;
+        }
+
+        .response-type.speak {
+            background: #0096ff;
+            color: #fff;
+        }
+
+        .response-type.digits {
+            background: #ff6600;
+            color: #fff;
+        }
+
+        /* Input Area */
+        .input-area {
+            display: flex;
+            border-top: 1px solid #333;
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .input-prefix {
+            padding: 15px;
+            color: #00ff88;
+            font-weight: bold;
+        }
+
+        #prompt-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-family: inherit;
+            font-size: 1rem;
+            padding: 15px 0;
+            outline: none;
+        }
+
+        #prompt-input::placeholder {
+            color: #555;
+        }
+
+        .send-btn {
+            background: #00ff88;
+            color: #000;
+            border: none;
+            padding: 15px 25px;
+            font-family: inherit;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .send-btn:hover {
+            background: #00cc6a;
+        }
+
+        .send-btn:disabled {
+            background: #555;
+            cursor: not-allowed;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .panel {
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid #333;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .panel-header {
+            background: #1a1a1a;
+            padding: 12px 15px;
+            font-weight: bold;
+            border-bottom: 1px solid #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .panel-content {
+            padding: 15px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        /* Memory Display */
+        .memory-item {
+            padding: 8px;
+            margin-bottom: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 5px;
+            font-size: 0.8rem;
+        }
+
+        .memory-item .index {
+            color: #00ff88;
+            font-weight: bold;
+        }
+
+        .memory-item .type {
+            color: #888;
+            font-size: 0.7rem;
+        }
+
+        .memory-item .text {
+            color: #ccc;
+            margin-top: 5px;
+            word-break: break-word;
+        }
+
+        /* Protocol Badges */
+        .protocol-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .badge {
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.75rem;
+            background: rgba(0, 255, 136, 0.2);
+            border: 1px solid #00ff88;
+        }
+
+        .badge.active {
+            background: #00ff88;
+            color: #000;
+        }
+
+        /* Actions */
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            padding: 15px;
+            border-top: 1px solid #333;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #555;
+            background: transparent;
+            color: #888;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.3s;
+        }
+
+        .action-btn:hover {
+            border-color: #00ff88;
+            color: #00ff88;
+        }
+
+        .action-btn.danger:hover {
+            border-color: #ff4444;
+            color: #ff4444;
+        }
+
+        /* Fragment Builder */
+        .fragment-builder {
+            display: none;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.5);
+            border-top: 1px solid #333;
+        }
+
+        .fragment-builder.active {
+            display: block;
+        }
+
+        .fragment-inputs {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .fragment-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .fragment-row input {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid #333;
+            color: #fff;
+            padding: 8px;
+            border-radius: 5px;
+            font-family: inherit;
+        }
+
+        .fragment-row input:focus {
+            border-color: #00ff88;
+            outline: none;
+        }
+
+        .fragment-row .ts {
+            width: 60px;
+        }
+
+        .remove-fragment {
+            background: #ff4444;
+            border: none;
+            color: #fff;
+            width: 30px;
+            height: 30px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .fragment-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .fragment-actions button {
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        #add-fragment {
+            background: transparent;
+            border: 1px solid #00ff88;
+            color: #00ff88;
+        }
+
+        #send-fragments {
+            background: #00ff88;
+            border: none;
+            color: #000;
+        }
+
+        #cancel-fragments {
+            background: transparent;
+            border: 1px solid #555;
+            color: #888;
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #333;
+            border-top-color: #00ff88;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>NEON AGENT</h1>
+            <p class="subtitle">Stateful AI Co-Pilot Terminal v2.0</p>
+            <div class="status-bar">
+                <div class="status-item">
+                    <div class="status-dot" id="connection-status"></div>
+                    <span id="connection-text">Connected</span>
+                </div>
+                <div class="status-item">
+                    <span>Memory: <strong id="memory-count">0</strong> entries</span>
+                </div>
+                <div class="status-item">
+                    <span>Crew Manifests: <strong id="manifest-count">0</strong></span>
+                </div>
+            </div>
+        </header>
+
+        <div class="main-layout">
+            <div class="terminal-section">
+                <div class="terminal">
+                    <div class="terminal-header">
+                        <div class="terminal-dots">
+                            <div class="terminal-dot red"></div>
+                            <div class="terminal-dot yellow"></div>
+                            <div class="terminal-dot green"></div>
+                        </div>
+                        <span>TRANSMISSION LOG</span>
+                    </div>
+                    <div class="terminal-output" id="output"></div>
+                    <div class="fragment-builder" id="fragment-builder">
+                        <div class="fragment-inputs" id="fragment-inputs">
+                            <div class="fragment-row">
+                                <input type="number" class="ts" placeholder="TS" value="0">
+                                <input type="text" class="word" placeholder="Word or phrase">
+                                <button class="remove-fragment" onclick="removeFragment(this)">×</button>
+                            </div>
+                        </div>
+                        <div class="fragment-actions">
+                            <button id="add-fragment" onclick="addFragment()">+ Add Fragment</button>
+                            <button id="send-fragments" onclick="sendFragments()">Send Fragments</button>
+                            <button id="cancel-fragments" onclick="toggleFragmentBuilder()">Cancel</button>
+                        </div>
+                    </div>
+                    <div class="input-area">
+                        <span class="input-prefix">></span>
+                        <input type="text" id="prompt-input" placeholder="Enter transmission..." autocomplete="off">
+                        <button class="send-btn" id="send-btn" onclick="sendPrompt()">TRANSMIT</button>
+                    </div>
+                </div>
+                <div class="action-buttons">
+                    <button class="action-btn" onclick="toggleFragmentBuilder()">Fragment Mode</button>
+                    <button class="action-btn" onclick="refreshMemory()">Refresh Memory</button>
+                    <button class="action-btn danger" onclick="resetAgent()">Reset Agent</button>
+                </div>
+            </div>
+
+            <div class="sidebar">
+                <div class="panel">
+                    <div class="panel-header">
+                        <span>PROTOCOLS</span>
+                    </div>
+                    <div class="panel-content">
+                        <div class="protocol-badges">
+                            <span class="badge active">Signal</span>
+                            <span class="badge active">Vessel</span>
+                            <span class="badge active">Math</span>
+                            <span class="badge active">Knowledge</span>
+                            <span class="badge active">Resume</span>
+                            <span class="badge active">Memory</span>
+                            <span class="badge active">Recall</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <div class="panel-header">
+                        <span>MEMORY STATE</span>
+                        <button class="action-btn" style="padding: 5px 10px; font-size: 0.75rem;" onclick="refreshMemory()">↻</button>
+                    </div>
+                    <div class="panel-content" id="memory-panel">
+                        <div class="memory-item">
+                            <span class="type">No entries yet</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8000';
+        let isLoading = false;
+        let isAuthenticated = false;
+
+        // Check connection and auth status on load
+        async function checkConnection() {
+            try {
+                const response = await fetch(`${API_BASE}/health`);
+                const data = await response.json();
+                document.getElementById('connection-status').classList.remove('offline');
+                document.getElementById('connection-text').textContent = data.neon_code_set ? 'Authenticated' : 'Awaiting Code';
+                document.getElementById('manifest-count').textContent = data.crew_manifests_stored || 0;
+
+                // Only update UI on initial load or status change
+                if (isAuthenticated !== data.neon_code_set) {
+                    isAuthenticated = data.neon_code_set;
+                    if (!isAuthenticated) {
+                        showAuthPrompt();
+                    } else {
+                        showReadyState();
+                    }
+                }
+
+                // Initial load
+                if (document.getElementById('output').innerHTML.trim() === '') {
+                    if (!data.neon_code_set) {
+                        showAuthPrompt();
+                    } else {
+                        showReadyState();
+                    }
+                    isAuthenticated = data.neon_code_set;
+                }
+
+                refreshMemory();
+            } catch (e) {
+                document.getElementById('connection-status').classList.add('offline');
+                document.getElementById('connection-text').textContent = 'Offline';
+            }
+        }
+
+        // Show authentication prompt
+        function showAuthPrompt() {
+            const output = document.getElementById('output');
+            output.innerHTML = `
+                <div class="message system" style="background: rgba(0, 255, 136, 0.15); border-left: 4px solid #00ff88;">
+                    <div class="message-label" style="color: #00ff88; font-size: 1rem;">NEON AUTHENTICATION REQUIRED</div>
+                    <div class="message-content" style="font-size: 1.1rem; line-height: 1.8;">
+                        <strong style="color: #fff;">Welcome, Pilot.</strong><br><br>
+                        To establish connection with NEON, you must first authenticate.<br><br>
+                        <span style="color: #00ff88; font-weight: bold;">▶ Enter your Neon Authorization Code below</span><br><br>
+                        <span style="color: #888; font-size: 0.85rem;">Your code should be a 16-character alphanumeric string (e.g., 514cb62feefebc6f)</span>
+                    </div>
+                </div>
+            `;
+            document.getElementById('prompt-input').placeholder = 'Enter your Neon Code here...';
+            document.getElementById('prompt-input').focus();
+        }
+
+        // Show ready state after auth
+        function showReadyState() {
+            const output = document.getElementById('output');
+            // Clear auth prompt and show ready message
+            output.innerHTML = `
+                <div class="message system" style="background: rgba(0, 255, 136, 0.1);">
+                    <div class="message-label" style="color: #00ff88;">AUTHENTICATION SUCCESSFUL</div>
+                    <div class="message-content">
+                        Connection established. All protocols ready.<br>
+                        Awaiting signal frequency transmission...
+                    </div>
+                </div>
+            `;
+            document.getElementById('prompt-input').placeholder = 'Enter transmission...';
+        }
+
+        // Hide auth prompt after successful auth
+        function hideAuthPrompt() {
+            document.getElementById('prompt-input').placeholder = 'Enter transmission...';
+        }
+
+        // Send prompt to agent
+        async function sendPrompt() {
+            const input = document.getElementById('prompt-input');
+            const prompt = input.value.trim();
+            if (!prompt || isLoading) return;
+
+            addMessage('user', prompt);
+            input.value = '';
+            setLoading(true);
+
+            try {
+                // If not authenticated, treat input as Neon code
+                if (!isAuthenticated) {
+                    const authResponse = await fetch(`${API_BASE}/set-code`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ code: prompt })
+                    });
+                    const authData = await authResponse.json();
+
+                    if (authResponse.ok && authData.status === 'success') {
+                        isAuthenticated = true;
+                        document.getElementById('connection-text').textContent = 'Authenticated';
+                        document.getElementById('output').innerHTML = '';
+                        addMessage('system', 'Authentication successful. Connection established.');
+                        addMessage('system', 'Awaiting signal frequency transmission...');
+                    } else {
+                        const errorMsg = authData.detail || 'Invalid code format';
+                        addMessage('error', `Authentication failed: ${errorMsg}`);
+                    }
+                } else {
+                    // Normal prompt processing - send as challenge
+                    const words = prompt.split(' ');
+                    const fragments = words.map((word, i) => ({ word, timestamp: i }));
+
+                    const response = await fetch(`${API_BASE}/challenge`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ type: 'challenge', message: fragments })
+                    });
+                    const data = await response.json();
+                    addAgentResponse(data);
+                }
+
+                refreshMemory();
+            } catch (e) {
+                addMessage('error', 'Failed to connect to agent: ' + e.message);
+            }
+
+            setLoading(false);
+        }
+
+        // Send fragments
+        async function sendFragments() {
+            const inputs = document.querySelectorAll('#fragment-inputs .fragment-row');
+            const fragments = [];
+
+            inputs.forEach(row => {
+                const ts = parseFloat(row.querySelector('.ts').value) || 0;
+                const word = row.querySelector('.word').value.trim();
+                if (word) {
+                    fragments.push({ timestamp: ts, word });
+                }
+            });
+
+            if (fragments.length === 0) return;
+
+            const sorted = [...fragments].sort((a, b) => a.timestamp - b.timestamp);
+            const reconstructed = sorted.map(f => f.word).join(' ');
+
+            addMessage('user', `[FRAGMENTS] ${JSON.stringify(fragments)}`);
+            addMessage('system', `Reconstructed: "${reconstructed}"`);
+            setLoading(true);
+
+            try {
+                const response = await fetch(`${API_BASE}/challenge`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ type: 'challenge', message: fragments })
+                });
+                const data = await response.json();
+                addAgentResponse(data);
+                refreshMemory();
+            } catch (e) {
+                addMessage('error', 'Failed to send fragments: ' + e.message);
+            }
+
+            setLoading(false);
+            toggleFragmentBuilder();
+        }
+
+        // Add message to output
+        function addMessage(type, content) {
+            const output = document.getElementById('output');
+            const msg = document.createElement('div');
+            msg.className = `message ${type}`;
+
+            const labels = {
+                user: 'YOU',
+                agent: 'NEON',
+                system: 'SYSTEM',
+                error: 'ERROR'
+            };
+
+            msg.innerHTML = `
+                <div class="message-label">${labels[type] || type.toUpperCase()}</div>
+                <div class="message-content">${escapeHtml(content)}</div>
+            `;
+
+            output.appendChild(msg);
+            output.scrollTop = output.scrollHeight;
+        }
+
+        // Add agent response with type badge
+        function addAgentResponse(data) {
+            const output = document.getElementById('output');
+            const msg = document.createElement('div');
+            msg.className = 'message agent';
+
+            const isSpeak = data.type === 'speak_text';
+            const content = data.text || data.digits || '';
+            const typeClass = isSpeak ? 'speak' : 'digits';
+            const typeName = isSpeak ? 'SPEAK' : 'DIGITS';
+
+            msg.innerHTML = `
+                <div class="message-label">NEON</div>
+                <div class="message-content">
+                    <span class="response-type ${typeClass}">${typeName}</span>
+                    <code>${escapeHtml(content)}</code>
+                </div>
+            `;
+
+            output.appendChild(msg);
+            output.scrollTop = output.scrollHeight;
+        }
+
+        // Refresh memory display
+        async function refreshMemory() {
+            try {
+                const response = await fetch(`${API_BASE}/memory`);
+                const data = await response.json();
+
+                const panel = document.getElementById('memory-panel');
+                const crewManifests = data.crew_manifests || [];
+                const allResponses = data.all_responses || [];
+
+                document.getElementById('memory-count').textContent = allResponses.length;
+                document.getElementById('manifest-count').textContent = crewManifests.length;
+
+                if (crewManifests.length === 0) {
+                    panel.innerHTML = '<div class="memory-item"><span class="type">No crew manifests yet</span></div>';
+                    return;
+                }
+
+                panel.innerHTML = crewManifests.map((text, i) => `
+                    <div class="memory-item">
+                        <span class="index">[Manifest ${i + 1}]</span>
+                        <div class="text">${escapeHtml(text.slice(0, 60))}${text.length > 60 ? '...' : ''}</div>
+                    </div>
+                `).join('');
+            } catch (e) {
+                console.error('Failed to refresh memory:', e);
+            }
+        }
+
+        // Reset agent memory
+        async function resetAgent() {
+            if (!confirm('Reset agent memory? All stored responses will be cleared.')) return;
+
+            try {
+                await fetch(`${API_BASE}/reset`, { method: 'POST' });
+                addMessage('system', 'Agent memory cleared.');
+                refreshMemory();
+            } catch (e) {
+                addMessage('error', 'Failed to reset agent.');
+            }
+        }
+
+        // Fragment builder
+        function toggleFragmentBuilder() {
+            const builder = document.getElementById('fragment-builder');
+            builder.classList.toggle('active');
+
+            if (builder.classList.contains('active')) {
+                // Reset to one empty fragment
+                document.getElementById('fragment-inputs').innerHTML = `
+                    <div class="fragment-row">
+                        <input type="number" class="ts" placeholder="TS" value="0">
+                        <input type="text" class="word" placeholder="Word or phrase">
+                        <button class="remove-fragment" onclick="removeFragment(this)">×</button>
+                    </div>
+                `;
+            }
+        }
+
+        function addFragment() {
+            const container = document.getElementById('fragment-inputs');
+            const count = container.children.length;
+
+            const row = document.createElement('div');
+            row.className = 'fragment-row';
+            row.innerHTML = `
+                <input type="number" class="ts" placeholder="TS" value="${count}">
+                <input type="text" class="word" placeholder="Word or phrase">
+                <button class="remove-fragment" onclick="removeFragment(this)">×</button>
+            `;
+
+            container.appendChild(row);
+        }
+
+        function removeFragment(btn) {
+            const container = document.getElementById('fragment-inputs');
+            if (container.children.length > 1) {
+                btn.parentElement.remove();
+            }
+        }
+
+        // Utility functions
+        function setLoading(loading) {
+            isLoading = loading;
+            const btn = document.getElementById('send-btn');
+            btn.disabled = loading;
+            btn.textContent = loading ? '...' : 'TRANSMIT';
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Event listeners
+        document.getElementById('prompt-input').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendPrompt();
+        });
+
+        // Initialize - reset agent on page load to always start fresh
+        async function initialize() {
+            try {
+                // Reset agent to start fresh (unauthenticated)
+                await fetch(`${API_BASE}/reset-full`, { method: 'POST' });
+                // Force show auth prompt on fresh start
+                isAuthenticated = false;
+                showAuthPrompt();
+            } catch (e) {
+                console.error('Failed to initialize:', e);
+                showAuthPrompt();
+            }
+        }
+
+        initialize();
+        setInterval(checkConnection, 30000);
+    </script>
+</body>
+</html>

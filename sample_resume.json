@@ -1,0 +1,67 @@
+{
+  "name": "Your Name Here",
+  "summary": "Experienced software engineer with expertise in distributed systems, machine learning, and cloud infrastructure. Passionate about building scalable solutions that impact millions of users.",
+  "education": [
+    {
+      "degree": "Master of Science",
+      "field": "Computer Science",
+      "school": "Your University",
+      "year": "2023"
+    },
+    {
+      "degree": "Bachelor of Science",
+      "field": "Computer Engineering",
+      "school": "Your University",
+      "year": "2021"
+    }
+  ],
+  "experience": [
+    {
+      "title": "Senior Software Engineer",
+      "company": "Tech Company",
+      "description": "Led development of distributed data processing pipelines handling petabytes of data daily. Reduced latency by 40% through architectural improvements."
+    },
+    {
+      "title": "Software Engineer",
+      "company": "Another Tech Company",
+      "description": "Built real-time ML inference systems serving millions of requests per second. Implemented caching layer that improved response times by 60%."
+    },
+    {
+      "title": "Software Engineering Intern",
+      "company": "Startup",
+      "description": "Developed microservices architecture for payment processing system. Integrated with multiple payment gateways."
+    }
+  ],
+  "projects": [
+    {
+      "name": "DistributedDB",
+      "description": "Open-source distributed database with strong consistency guarantees using Raft consensus",
+      "technologies": ["Go", "Raft", "gRPC", "Protocol Buffers"]
+    },
+    {
+      "name": "MLPipeline",
+      "description": "End-to-end machine learning pipeline for real-time fraud detection",
+      "technologies": ["Python", "TensorFlow", "Kafka", "Kubernetes"]
+    },
+    {
+      "name": "CloudMonitor",
+      "description": "Infrastructure monitoring and alerting system for cloud-native applications",
+      "technologies": ["Rust", "Prometheus", "Grafana", "AWS"]
+    }
+  ],
+  "skills": [
+    "Python",
+    "Go",
+    "Rust",
+    "Kubernetes",
+    "Docker",
+    "AWS",
+    "GCP",
+    "Machine Learning",
+    "Distributed Systems",
+    "System Design",
+    "PostgreSQL",
+    "Redis",
+    "Kafka"
+  ]
+}

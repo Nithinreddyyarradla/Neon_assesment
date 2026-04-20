@@ -1,0 +1,84 @@
+{
+  "name": "Nithin R",
+  "email": "reddy.nithin2026@gmail.com",
+  "phone": "+1 669-367-3023",
+  "location": "Santa Clara, California",
+  "linkedin": "linkedin.com/in/nithin-reddy-077380371",
+  "summary": "Software Development Engineer specializing in Gen AI, ML systems, and billion-scale vector search platforms at Amazon. Expert in RAG pipelines, LLMs, and distributed ML infrastructure with proven cost optimization delivering millions in savings.",
+  "education": [
+    {
+      "degree": "Masters",
+      "field": "Computer Information Systems",
+      "school": "Central Michigan University",
+      "year": "2024",
+      "dates": "Aug 2022 - May 2024"
+    },
+    {
+      "degree": "Bachelors of Technology",
+      "field": "Information Technology",
+      "school": "IIIT Bhubaneshwar",
+      "year": "2020",
+      "dates": "Aug 2016 - May 2020"
+    }
+  ],
+  "experience": [
+    {
+      "title": "Software Development Engineer",
+      "team": "Gen AI & ML Feature Store for Amazon Catalog",
+      "company": "Amazon.com, Inc.",
+      "dates": "July 2024 - Jan 2026",
+      "description": "Built billion-scale vector similarity search platforms using Faiss-HNSW for 4B-70B+ multimodal embeddings. Invented patent-pending online vector search architecture achieving 80% cost reduction. Designed Apache Iceberg framework eliminating $1.2M annual costs. Built LLM automation platform with Claude 3.5 Sonnet processing 40K+ items annually.",
+      "highlights": [
+        "Designed billion-scale vector similarity search using Faiss-HNSW over 4B-70B+ embeddings",
+        "Built offline ANN pipeline with AWS Batch, S3, Step Functions achieving 85% cost savings",
+        "Invented patent-pending hybrid OpenSearch + DynamoDB architecture with 80% cost reduction",
+        "Designed Apache Iceberg framework eliminating $1.2M annual infrastructure costs",
+        "Built LLM automation platform with Claude 3.5 Sonnet processing 40K+ items annually"
+      ]
+    },
+    {
+      "title": "Machine Learning Engineer",
+      "company": "Quantiphi",
+      "dates": "June 2020 - July 2022",
+      "description": "Built end-to-end NLP pipelines for insurance document processing using LSTM, GRU, and BERT. Developed large-scale computer vision pipelines for person re-identification. Improved multi-object tracking accuracy from 62.2% to 74.8% and reduced latency by 75%.",
+      "highlights": [
+        "Built NLP automation for insurance using LSTM, GRU, BERT with NER and relation extraction",
+        "Developed CV pipeline for person re-identification using MobileNet, EfficientDet, DeepSORT",
+        "Improved tracking accuracy from 62.2% to 74.8%, reduced latency by 75%",
+        "Designed safety monitoring system using SSD, YOLOv3, PoseNet on NVIDIA Triton",
+        "Built distributed training pipelines on Google Cloud ML Engine"
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "name": "Building RAG Agents with LLMs",
+      "source": "NVIDIA DLI",
+      "description": "Engineered RAG chatbot using SentenceTransformers, Qdrant, and GPT-4 reducing hallucination by 40%. Optimized retrieval latency by 35% through hybrid search achieving sub-second response on 50K+ documents.",
+      "technologies": ["SentenceTransformers", "Qdrant", "GPT-4", "BM25", "Streamlit", "RAG"]
+    },
+    {
+      "name": "AI/ML-Powered Clinical Decision Support System",
+      "description": "Developed multi-model ML pipeline for early sepsis prediction using XGBoost and LSTM achieving AUROC 0.92 with 6-10 hour early warnings. Built explainable AI system with SHAP and LLM-generated clinical summaries.",
+      "technologies": ["XGBoost", "LSTM", "SHAP", "Ensemble Learning", "LLM"]
+    }
+  ],
+  "skills": [
+    "Python", "Java", "SQL", "Bash/Shell", "JavaScript",
+    "TensorFlow", "PyTorch", "Keras", "XGBoost", "LSTM", "BERT",
+    "FAISS", "Qdrant", "OpenSearch", "Vector Databases",
+    "AWS Lambda", "S3", "Step Functions", "DynamoDB", "EKS",
+    "Docker", "Kubernetes", "NVIDIA Triton", "CI/CD",
+    "GPT-4", "Claude 3.5 Sonnet", "RAG", "LangChain", "Prompt Engineering",
+    "System Design", "Distributed Systems", "Cost Optimization"
+  ],
+  "skills_categories": {
+    "Programming Languages": ["Python", "Java", "SQL", "Bash/Shell", "JavaScript (ES6+)"],
+    "Machine Learning & AI": ["NumPy", "Pandas", "TensorFlow", "PyTorch", "Keras", "XGBoost", "LSTM", "BERT", "SentenceTransformers", "SHAP", "Deep Learning", "RAG", "LangChain"],
+    "Vector Search & IR": ["FAISS (HNSW)", "Qdrant", "OpenSearch", "BM25", "Hybrid Search", "Embedding Indexing"],
+    "Data & Storage": ["DynamoDB", "S3", "Apache Iceberg", "HBase", "PostgreSQL", "Elasticsearch", "Vector Databases"],
+    "Cloud Platforms": ["AWS (Lambda, S3, Step Functions, DynamoDB, EKS, ECS)", "GCP (AI Platform, ML Engine)"],
+    "MLOps & Deployment": ["Docker", "Kubernetes", "NVIDIA Triton Inference Server", "CI/CD Pipelines", "Model Serving"],
+    "GenAI & LLMs": ["GPT-4", "Claude 3.5 Sonnet", "Prompt Engineering", "RAG Pipelines", "LLM Evaluation"]
+  }
+}
