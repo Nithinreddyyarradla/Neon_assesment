@@ -210,6 +210,17 @@ async def get_memory():
     }
 
 
+@app.get("/debug-resume")
+async def debug_resume():
+    """Debug: Show loaded resume data."""
+    return {
+        "resume_loaded": agent.resume is not None,
+        "resume_keys": list(agent.resume.keys()) if agent.resume else [],
+        "has_email": "email" in agent.resume if agent.resume else False,
+        "email_value": agent.resume.get("email", "NOT_FOUND") if agent.resume else "NO_RESUME"
+    }
+
+
 # Serve static frontend
 static_dir = os.path.join(os.path.dirname(__file__), "static")
 if os.path.exists(static_dir):
