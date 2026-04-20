@@ -219,14 +219,13 @@ async def get_memory():
 
 @app.get("/debug-env")
 async def debug_env():
-    """Debug: List environment variables containing 'OPENAI' or 'API'."""
+    """Debug: List all environment variable names."""
     import os
-    env_vars = {k: v[:10] + "..." if v and len(v) > 10 else v
-                for k, v in os.environ.items()
-                if "OPENAI" in k.upper() or "API" in k.upper() or "KEY" in k.upper()}
+    all_keys = sorted(os.environ.keys())
     return {
-        "matching_env_vars": env_vars,
-        "total_env_vars": len(os.environ)
+        "all_env_keys": all_keys,
+        "total": len(all_keys),
+        "has_openai": "OPENAI_API_KEY" in os.environ
     }
 
 
