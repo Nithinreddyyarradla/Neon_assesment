@@ -621,8 +621,8 @@
                 <div class="message system" style="background: rgba(0, 255, 136, 0.1);">
                     <div class="message-label" style="color: #00ff88;">AUTHENTICATION SUCCESSFUL</div>
                     <div class="message-content">
-                        Connection established. All protocols ready.<br>
-                        Awaiting signal frequency transmission...
+                        Awaiting signal frequency transmission...<br>
+                        Connection established. All protocols ready.
                     </div>
                 </div>
             `;
@@ -658,8 +658,8 @@
                         isAuthenticated = true;
                         document.getElementById('connection-text').textContent = 'Authenticated';
                         document.getElementById('output').innerHTML = '';
-                        addMessage('system', 'Authentication successful. Connection established.');
                         addMessage('system', 'Awaiting signal frequency transmission...');
+                        addMessage('system', 'Authentication successful. Connection established.');
                     } else {
                         const errorMsg = authData.detail || 'Invalid code format';
                         addMessage('error', `Authentication failed: ${errorMsg}`);
