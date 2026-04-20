@@ -1,7 +1,9 @@
 # Core dependencies
 requests>=2.28.0
+python-dotenv>=1.0.0
+openai>=1.0.0
 
-# API Server (optional - only needed if using server.py)
+# API Server
 fastapi>=0.100.0
 uvicorn>=0.22.0
 pydantic>=2.0.0
