@@ -193,11 +193,15 @@ async def reset_full():
 @app.get("/health")
 async def health_check():
     """Health check endpoint."""
+    # Re-check env var at runtime
+    runtime_key = os.getenv("OPENAI_API_KEY")
     return {
         "status": "healthy",
         "using_openai": USE_OPENAI,
         "openai_key_present": OPENAI_KEY is not None,
         "openai_key_length": len(OPENAI_KEY) if OPENAI_KEY else 0,
+        "runtime_key_present": runtime_key is not None,
+        "runtime_key_length": len(runtime_key) if runtime_key else 0,
         "neon_code_set": agent.neon_code is not None,
         "resume_loaded": agent.resume is not None,
         "crew_manifests_stored": len(agent.memory.transmissions)
