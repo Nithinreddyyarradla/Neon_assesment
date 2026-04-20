@@ -433,8 +433,11 @@ class PromptClassifier:
     def _is_crew_manifest(self, prompt: str) -> bool:
         patterns = [
             r'crew.*member',
+            r'crew.*mate',
+            r'who.*crew',
             r'transmit.*(?:education|experience|skills?|projects?|background|deployment)',
             r'manifest',
+            r'(?:name|education|experience|skills?|projects?).*crew',
         ]
         return any(re.search(p, prompt) for p in patterns)
 
@@ -500,6 +503,9 @@ class PromptClassifier:
         elif "skill" in prompt or "technolog" in prompt or "expertise" in prompt:
             aspect = "skills"
         elif "summary" in prompt or "about" in prompt or "overview" in prompt or "introduce" in prompt:
+            aspect = "summary"
+        elif "who" in prompt:
+            # "Who is the crew mate" -> return summary/intro
             aspect = "summary"
         else:
             # Pass the actual query term to check if it's an unknown field

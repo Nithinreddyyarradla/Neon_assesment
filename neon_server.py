@@ -28,14 +28,20 @@ from pydantic import BaseModel
 from typing import Dict, Any, List, Optional
 
 # Use OpenAI agent if API key is available, otherwise fall back to rule-based
-USE_OPENAI = os.getenv("OPENAI_API_KEY") is not None
+OPENAI_KEY = os.getenv("OPENAI_API_KEY")
+USE_OPENAI = OPENAI_KEY is not None and len(OPENAI_KEY) > 20
 
 if USE_OPENAI:
-    from neon_agent_openai import NeonAgent, reconstruct_message
-    print("Using OpenAI-powered agent")
+    try:
+        from neon_agent_openai import NeonAgent, reconstruct_message
+        print(f"Using OpenAI-powered agent (key: {OPENAI_KEY[:8]}...)")
+    except Exception as e:
+        print(f"Failed to load OpenAI agent: {e}, falling back to rule-based")
+        from neon_agent import NeonAgent, reconstruct_message
+        USE_OPENAI = False
 else:
     from neon_agent import NeonAgent, reconstruct_message
-    print("Using rule-based agent (set OPENAI_API_KEY to use OpenAI)")
+    print(f"Using rule-based agent (OPENAI_API_KEY not set or invalid, got: {OPENAI_KEY[:8] if OPENAI_KEY else 'None'}...)")
 
 # =============================================================================
 # API MODELS
