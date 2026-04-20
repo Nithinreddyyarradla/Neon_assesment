@@ -127,10 +127,7 @@ The server automatically uses the OpenAI agent if `OPENAI_API_KEY` is set, other
 
 ## Author
 
-**Nithin Reddy**
-- Software Development Engineer at Amazon
-- Specializing in Gen AI, ML systems, and billion-scale vector search platforms
-
+Nithin Reddy Yarradla 
 ## License
 
 MIT License
