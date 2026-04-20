@@ -33,10 +33,21 @@ export OPENAI_API_KEY="your-api-key-here"
 
 ## Usage
 
-### Start the Server
+### Option 1: Run with Python
 
 ```bash
 python neon_server.py
+```
+
+### Option 2: Run with Docker
+
+```bash
+# Build and run with docker-compose
+OPENAI_API_KEY=your-api-key docker-compose up --build
+
+# Or build manually
+docker build -t neon-agent .
+docker run -p 8000:8000 -e OPENAI_API_KEY=your-api-key neon-agent
 ```
 
 The server will start at `http://localhost:8000`
