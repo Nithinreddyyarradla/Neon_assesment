@@ -552,7 +552,10 @@
     </div>
 
     <script>
-        const API_BASE = 'http://localhost:8000';
+        // Use same origin for deployed environments, localhost for local dev
+        const API_BASE = window.location.hostname === 'localhost'
+            ? 'http://localhost:8000'
+            : window.location.origin;
         let isLoading = false;
         let isAuthenticated = false;
 
