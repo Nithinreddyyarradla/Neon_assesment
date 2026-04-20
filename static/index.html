@@ -552,7 +552,8 @@
     </div>
 
     <script>
-        const API_BASE = 'http://localhost:8000';
+        // Use same host as frontend (works for both local and deployed)
+        const API_BASE = window.location.origin;
         let isLoading = false;
         let isAuthenticated = false;
 
