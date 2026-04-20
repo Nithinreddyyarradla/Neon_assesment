@@ -213,12 +213,22 @@ async def get_memory():
 @app.get("/debug-resume")
 async def debug_resume():
     """Debug: Show loaded resume data."""
-    return {
-        "resume_loaded": agent.resume is not None,
-        "resume_keys": list(agent.resume.keys()) if agent.resume else [],
-        "has_email": "email" in agent.resume if agent.resume else False,
-        "email_value": agent.resume.get("email", "NOT_FOUND") if agent.resume else "NO_RESUME"
-    }
+    try:
+        resume = agent.resume
+        if resume is None:
+            return {"error": "resume is None", "resume_loaded": False}
+        if not isinstance(resume, dict):
+            return {"error": f"resume is {type(resume).__name__}, not dict", "resume_loaded": True}
+        return {
+            "resume_loaded": True,
+            "resume_keys": list(resume.keys()),
+            "has_email": "email" in resume,
+            "email_value": resume.get("email", "NOT_FOUND"),
+            "has_phone": "phone" in resume,
+            "phone_value": resume.get("phone", "NOT_FOUND")
+        }
+    except Exception as e:
+        return {"error": str(e), "type": type(e).__name__}
 
 
 # Serve static frontend
