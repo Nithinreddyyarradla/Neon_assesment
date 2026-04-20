@@ -63,10 +63,24 @@ class AgentResponse(BaseModel):
 def load_default_resume():
     """Load the default resume from nithin_resume.json"""
     resume_path = os.path.join(os.path.dirname(__file__), "nithin_resume.json")
+    print(f"Looking for resume at: {resume_path}")
+
     if os.path.exists(resume_path):
         with open(resume_path, 'r') as f:
-            return json.load(f)
-    return None
+            data = json.load(f)
+            print(f"Resume loaded successfully: {data.get('name', 'Unknown')}")
+            return data
+
+    print("Resume file not found, using fallback")
+    # Fallback resume
+    return {
+        "name": "Nithin R",
+        "summary": "Software Development Engineer at Amazon specializing in Gen AI, ML systems, and billion-scale vector search.",
+        "education": [{"degree": "Masters", "field": "Computer Information Systems", "school": "Central Michigan University", "year": "2024"}],
+        "experience": [{"title": "Software Development Engineer", "company": "Amazon.com, Inc.", "description": "Built billion-scale vector similarity search platforms using Faiss-HNSW. Invented patent-pending online vector search architecture."}],
+        "projects": [{"name": "RAG Agents", "description": "Built RAG chatbot with GPT-4", "technologies": ["Python", "Qdrant", "GPT-4"]}],
+        "skills": ["Python", "PyTorch", "FAISS", "AWS", "RAG", "LLMs", "Distributed Systems", "Gen AI"]
+    }
 
 
 # =============================================================================
