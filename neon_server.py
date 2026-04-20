@@ -88,7 +88,7 @@ def load_default_resume():
 app = FastAPI(
     title="NEON Agent API",
     description="Stateful AI agent for the Neon Health hiring challenge",
-    version="2.0.0"
+    version="2.1.0"
 )
 
 app.add_middleware(
