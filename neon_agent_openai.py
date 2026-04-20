@@ -113,6 +113,11 @@ class WikipediaTool:
 @dataclass
 class Resume:
     name: str
+    email: str
+    phone: str
+    linkedin: str
+    github: str
+    location: str
     education: str
     experience: str
     skills: str
@@ -154,6 +159,11 @@ class Resume:
 
         return cls(
             name=data.get("name", ""),
+            email=data.get("email", ""),
+            phone=data.get("phone", ""),
+            linkedin=data.get("linkedin", ""),
+            github=data.get("github", ""),
+            location=data.get("location", ""),
             education=education,
             experience=experience,
             skills=skills,
@@ -344,6 +354,11 @@ CRITICAL RULES:
             context += f"""
 CREW MANIFEST DATA:
 - Name: {self.resume.name}
+- Email: {self.resume.email}
+- Phone: {self.resume.phone}
+- LinkedIn: {self.resume.linkedin}
+- GitHub: {self.resume.github}
+- Location: {self.resume.location}
 - Education: {self.resume.education}
 - Experience: {self.resume.experience}
 - Skills: {self.resume.skills}
