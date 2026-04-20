@@ -215,17 +215,26 @@ You must analyze prompts and respond with ONLY a JSON object in one of these for
 CHECKPOINT TYPES:
 1. SIGNAL HANDSHAKE: "Respond on frequency X" → enter_digits with the frequency number
 2. VESSEL ID: "Enter your authorization code" → enter_digits with the neon_code
-3. MATH: "Calculate/Compute/What is X" → enter_digits with the result (use calculate tool)
+3. MATH: "Calculate/Compute/What is X + Y" → enter_digits with the result (use calculate tool)
 4. KNOWLEDGE: "Speak the Nth word of entry for X" → speak_text with the word (use wikipedia tool)
-5. CREW MANIFEST: Questions about crew member → speak_text with info from resume
+5. CREW MANIFEST: Questions about crew member/mate → speak_text with info from resume
 6. VERIFICATION: "Recall word N from transmission M" → speak_text with the recalled word
+
+CREW MANIFEST QUERIES - Answer these from the resume data:
+- "Who is the crew member/mate" → respond with name and summary
+- "name of crew" → respond with name
+- "education/background" → respond with education info
+- "experience/work" → respond with work experience
+- "skills" → respond with skills list
+- "projects" → respond with project info
 
 CRITICAL RULES:
 - ONLY append "#" to digits if the prompt explicitly says "pound key" or "followed by pound" or "#"
 - Do NOT add "#" unless explicitly requested
 - For math, ALWAYS use the calculate tool - never compute mentally
 - For knowledge queries, ALWAYS use the wikipedia_lookup tool
-- For crew manifest, ONLY answer with data from the resume. If the info is not in the resume (like age, phone, address), respond with: {"type": "speak_text", "text": "Information not available in crew manifest"}
+- For crew manifest questions (who, name, education, experience, skills, projects), ALWAYS use the resume data provided
+- Only say "Information not available" for fields NOT in resume (like age, phone, address, birthday)
 - For recall/verification, use the recall_transmission tool
 - Return ONLY the JSON object, no explanation or other text"""
 
