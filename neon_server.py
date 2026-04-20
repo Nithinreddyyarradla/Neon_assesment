@@ -23,18 +23,11 @@ from pydantic import BaseModel
 from typing import Dict, Any, List, Optional
 
 # Use OpenAI agent if API key is available, otherwise fall back to rule-based
-USE_OPENAI = False
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+USE_OPENAI = os.getenv("OPENAI_API_KEY") is not None
 
-if OPENAI_API_KEY and len(OPENAI_API_KEY) > 10:
-    try:
-        from neon_agent_openai import NeonAgent, reconstruct_message
-        USE_OPENAI = True
-        print("Using OpenAI-powered agent")
-    except Exception as e:
-        print(f"Failed to load OpenAI agent: {e}")
-        from neon_agent import NeonAgent, reconstruct_message
-        print("Falling back to rule-based agent")
+if USE_OPENAI:
+    from neon_agent_openai import NeonAgent, reconstruct_message
+    print("Using OpenAI-powered agent")
 else:
     from neon_agent import NeonAgent, reconstruct_message
     print("Using rule-based agent (set OPENAI_API_KEY to use OpenAI)")
@@ -115,8 +108,6 @@ async def process_challenge(request: ChallengeRequest):
         response = agent.process(challenge)
         return AgentResponse(**response)
     except Exception as e:
-        import traceback
-        traceback.print_exc()
         return AgentResponse(type="speak_text", text=f"Error: {str(e)}")
 
 
@@ -152,10 +143,12 @@ async def set_neon_code(request: NeonCodeRequest):
     """Set the Neon authorization code."""
     code = request.code.strip()
 
-    # Validate code: must be non-empty alphanumeric
+    # Validate code: must be 16 alphanumeric characters
     if not code:
         raise HTTPException(status_code=400, detail="Code cannot be empty")
-    if not code.replace("-", "").replace("_", "").isalnum():
+    if len(code) != 16:
+        raise HTTPException(status_code=400, detail="Code must be exactly 16 characters")
+    if not code.isalnum():
         raise HTTPException(status_code=400, detail="Code must be alphanumeric")
 
     agent.set_neon_code(code)
