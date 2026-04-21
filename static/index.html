@@ -688,12 +688,6 @@
 
         // Send fragments
         async function sendFragments() {
-            if (!isAuthenticated) {
-                addMessage('error', 'Please authenticate first by entering your 16-character Neon code.');
-                toggleFragmentBuilder();
-                return;
-            }
-
             const inputs = document.querySelectorAll('#fragment-inputs .fragment-row');
             const fragments = [];
 
@@ -820,11 +814,6 @@
 
         // Fragment builder
         function toggleFragmentBuilder() {
-            if (!isAuthenticated) {
-                addMessage('error', 'Please authenticate first by entering your 16-character Neon code.');
-                return;
-            }
-
             const builder = document.getElementById('fragment-builder');
             builder.classList.toggle('active');
 
