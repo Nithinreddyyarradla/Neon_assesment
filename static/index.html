@@ -568,24 +568,20 @@
                 document.getElementById('connection-text').textContent = data.neon_code_set ? 'Authenticated' : 'Awaiting Code';
                 document.getElementById('manifest-count').textContent = data.crew_manifests_stored || 0;
 
-                // Only update UI on initial load or status change
-                if (isAuthenticated !== data.neon_code_set) {
-                    isAuthenticated = data.neon_code_set;
-                    if (!isAuthenticated) {
-                        showAuthPrompt();
-                    } else {
-                        showReadyState();
-                    }
+                // Only update UI if server says authenticated (don't reset to false)
+                if (!isAuthenticated && data.neon_code_set) {
+                    isAuthenticated = true;
+                    showReadyState();
                 }
 
-                // Initial load
+                // Initial load - only show auth prompt if not already authenticated
                 if (document.getElementById('output').innerHTML.trim() === '') {
-                    if (!data.neon_code_set) {
+                    if (!isAuthenticated && !data.neon_code_set) {
                         showAuthPrompt();
-                    } else {
+                    } else if (data.neon_code_set) {
+                        isAuthenticated = true;
                         showReadyState();
                     }
-                    isAuthenticated = data.neon_code_set;
                 }
 
                 refreshMemory();
